@@ -2,6 +2,7 @@ package com.reddius.model;
 
 import java.time.Instant;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Long id;
 	
 	@NotBlank(message = "Username is required")
@@ -38,6 +39,7 @@ public class User {
 	@NotEmpty(message = "Email is required")
 	private String email;
 	
+	@Column(name="creation_date")
 	private Instant creationDate;
 	
 	private boolean enabled;

@@ -2,6 +2,7 @@ package com.reddius.model;
 
 import java.time.Instant;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class VerificationToken {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	private String token;
@@ -32,5 +33,6 @@ public class VerificationToken {
 	@JoinColumn(name="user_id", referencedColumnName = "id")
 	private User user;
 	
+	@Column(name="expiration_date")
 	private Instant experationDate;
 }

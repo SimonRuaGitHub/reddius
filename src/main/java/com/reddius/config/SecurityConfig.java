@@ -8,25 +8,25 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-//@EnableWebSecurity
-public class SecurityConfig /*extends WebSecurityConfigurerAdapter*/{
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-	//@Override
+	@Override
 	public void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable() //as we are using stateless (REST) and Json Web Token this can be disabled
 		            .authorizeRequests()
-		            .antMatchers("/api/auth/**")
+		            .antMatchers("/api/auth/**","/dummy/**")
 		            .permitAll()
 		            .anyRequest()
 		            .authenticated();
 	}
 	
-	//@Override
+	@Override
 	public void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
 		authManagerBuilder.inMemoryAuthentication().withUser("simon").password("1245").roles("ADMIN");
 	}
 	
-	//@Bean
+	@Bean
 	public PasswordEncoder passwordEncoder() {
 		   return new BCryptPasswordEncoder();
 	}

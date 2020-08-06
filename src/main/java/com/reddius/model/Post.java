@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 public class Post {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	@NotBlank(message = "Post name cannot be empty or null")

@@ -1,30 +1,35 @@
 package com.reddius.service;
 
 import java.time.Instant;
+import java.util.Random;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.reddius.dto.RegisterRequest;
+import com.reddius.model.NotificationEmail;
 import com.reddius.model.User;
+import com.reddius.model.VerificationToken;
 import com.reddius.repository.UserRepository;
+import com.reddius.repository.VerificationTokenRepository;
 
-//@Service
+import lombok.AllArgsConstructor;
+
+@Service
+@AllArgsConstructor
 public class AuthService {
 	
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 	
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 	
-	//@Autowired
-	public AuthService(final PasswordEncoder passwordEncoder, final UserRepository userRepository) {
-		this.passwordEncoder = passwordEncoder;
-		this.userRepository = userRepository;
-	}
-
+	private final VerificationTokenRepository verTokenRepository;
+	
+	private final MailService mailService;
+	
 	@Transactional
 	public void signup(RegisterRequest regRequest) {
 		   User user = new User();
@@ -35,5 +40,21 @@ public class AuthService {
 		   user.setEnabled(false);
 		   
 		   userRepository.save(user);
+		   
+		   String token = generateVerificationtToken(user);
+		   mailService.sendMail(new NotificationEmail("Welcome from Reddius", user.getEmail(), "Thank you for Signup to Reddius please click on"
+		   		+ " url to activate your account: http://localhost:8080/api/auth/accountVerification/" + token));
+	}
+	
+	private String generateVerificationtToken(User user) {
+		String token = UUID.randomUUID().toString();
+	    VerificationToken verificationToken = new VerificationToken();
+	    verificationToken.setToken(token);
+	    verificationToken.setUser(user);
+	    verificationToken.setExperationDate(Instant.now());
+	    
+	    verTokenRepository.save(verificationToken);
+	    
+	    return token;
 	}
 }
