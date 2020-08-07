@@ -1,6 +1,7 @@
 package com.reddius.service;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.reddius.dto.RegisterRequest;
+import com.reddius.exceptions.SpringReddiusException;
 import com.reddius.model.NotificationEmail;
 import com.reddius.model.User;
 import com.reddius.model.VerificationToken;
@@ -56,5 +58,19 @@ public class AuthService {
 	    verTokenRepository.save(verificationToken);
 	    
 	    return token;
+	}
+
+	public void verifyAccount(String token) {
+		Optional<VerificationToken> optVerifToken = verTokenRepository.findByToken(token);
+		optVerifToken.orElseThrow(() -> new SpringReddiusException("Invalid Token"));
+		fetchUserAndEnable(optVerifToken.get());
+	}
+
+	@Transactional
+	private void fetchUserAndEnable(VerificationToken verificationToken) {
+		String username = verificationToken.getUser().getUsername();
+		User user = userRepository.findByUsername(username).orElseThrow(() -> new SpringReddiusException("The user "+username+" has been not found"));
+		user.setEnabled(true);
+		userRepository.save(user);
 	}
 }

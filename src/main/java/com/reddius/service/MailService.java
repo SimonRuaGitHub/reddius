@@ -6,7 +6,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 
-import com.reddius.exceptions.SpringRedditException;
+import com.reddius.exceptions.SpringReddiusException;
 import com.reddius.model.NotificationEmail;
 
 import lombok.AllArgsConstructor;
@@ -33,7 +33,7 @@ public class MailService {
         	   mailSender.send(messagePreparator);     	  
         	   log.info("Activation email sent");
            }catch(MailException e) {
-        	   throw new SpringRedditException("It was not possible to send email: " + e.getMessage());
+        	   throw new SpringReddiusException("It was not possible to send email: " + e.getMessage());
            }
 		   
  
