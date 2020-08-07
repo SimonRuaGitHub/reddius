@@ -26,7 +26,6 @@ public class AuthController {
 			authService.signup(registerRequest);
 			return new ResponseEntity<String>("User registration successful", HttpStatus.CREATED);
 	}
-
 	
 	@GetMapping("/accountVerification/{token}")
     public ResponseEntity<String> verifyAccount(@PathVariable String token) {
