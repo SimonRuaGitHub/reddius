@@ -2,14 +2,19 @@ package com.reddius.service;
 
 import java.time.Instant;
 import java.util.Optional;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.reddius.dto.AuthenticationResponse;
+import com.reddius.dto.LoginRequest;
 import com.reddius.dto.RegisterRequest;
 import com.reddius.exceptions.SpringReddiusException;
 import com.reddius.model.NotificationEmail;
@@ -17,6 +22,7 @@ import com.reddius.model.User;
 import com.reddius.model.VerificationToken;
 import com.reddius.repository.UserRepository;
 import com.reddius.repository.VerificationTokenRepository;
+import com.reddius.security.JwtProvider;
 
 import lombok.AllArgsConstructor;
 
@@ -31,6 +37,10 @@ public class AuthService {
 	private final VerificationTokenRepository verTokenRepository;
 	
 	private final MailService mailService;
+	
+	private final AuthenticationManager authManager;
+	
+	private final JwtProvider jwtProvider;
 	
 	@Transactional
 	public void signup(RegisterRequest regRequest) {
@@ -72,5 +82,14 @@ public class AuthService {
 		User user = userRepository.findByUsername(username).orElseThrow(() -> new SpringReddiusException("The user "+username+" has been not found"));
 		user.setEnabled(true);
 		userRepository.save(user);
+	}
+
+	public AuthenticationResponse login(LoginRequest loginReq) {
+		
+		Authentication authentication = authManager.authenticate( new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword()) );
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		String token = jwtProvider.generateToken(authentication);
+		
+		return new AuthenticationResponse(token, loginReq.getUsername());
 	}
 }

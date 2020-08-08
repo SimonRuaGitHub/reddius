@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.reddius.dto.AuthenticationResponse;
+import com.reddius.dto.LoginRequest;
 import com.reddius.dto.RegisterRequest;
 import com.reddius.service.AuthService;
 
@@ -32,4 +34,9 @@ public class AuthController {
     	   authService.verifyAccount(token);
     	   return new ResponseEntity<String>("Account activated successfully",HttpStatus.OK);
     }
+	
+	@PostMapping("/login")
+	public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
+		return authService.login(loginRequest);
+	}
 }
