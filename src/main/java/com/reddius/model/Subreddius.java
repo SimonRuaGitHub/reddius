@@ -12,9 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-
-import org.springframework.lang.Nullable;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name="subreddius")
 public class Subreddius {
 	
 	@Id
@@ -39,6 +39,7 @@ public class Subreddius {
 	private String description;
 	
 	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name="subredd_id", referencedColumnName = "id")
 	private List<Post> posts;
 	
 	@Column(name = "creation_date")

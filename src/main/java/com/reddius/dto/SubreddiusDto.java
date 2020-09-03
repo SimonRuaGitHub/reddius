@@ -14,6 +14,6 @@ public class SubreddiusDto {
 	private Long id;
 	private String subreddiusName;
 	private String description;
-	private String user_id;
+	private String userid;
 	private Integer numberOfPosts;
 }
