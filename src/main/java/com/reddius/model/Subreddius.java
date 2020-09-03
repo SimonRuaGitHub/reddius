@@ -3,6 +3,7 @@ package com.reddius.model;
 import java.time.Instant;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -40,6 +41,7 @@ public class Subreddius {
 	@OneToMany(fetch = FetchType.LAZY)
 	private List<Post> posts;
 	
+	@Column(name = "creation_date")
 	private Instant createdDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

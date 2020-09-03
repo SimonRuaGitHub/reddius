@@ -7,6 +7,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
@@ -17,6 +18,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.reddius.exceptions.SpringReddiusException;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
 @Service
@@ -50,5 +53,30 @@ public class JwtProvider {
 		}catch(KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
 			throw new SpringReddiusException("Exception ocurred while retrieving public key from keystore");
 		}
+	}
+	
+	public boolean validateToken(String jwt) {
+		Jwts.parserBuilder().setSigningKey(getPublicKey()).build().parseClaimsJws(jwt);
+		return true;
+	}
+	
+	private PublicKey getPublicKey() {
+		
+		try {
+			PublicKey publicKey = keyStore.getCertificate("springblog").getPublicKey();
+			return publicKey;
+		} catch (KeyStoreException e) {
+			throw new SpringReddiusException("Exception occurred while retrieving public key from key store");
+		}
+	}
+	
+	public String getUsernameFromJwt(String token) {
+		Claims claims =  Jwts.parserBuilder()
+				             .setSigningKey(getPublicKey())
+				             .build()
+				             .parseClaimsJws(token)
+				             .getBody();
+		
+		return claims.getSubject();
 	}
 }
