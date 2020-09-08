@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reddius.dto.SubreddiusDto;
+import com.reddius.mapper.SubreddiusMapper;
 import com.reddius.model.Subreddius;
 import com.reddius.repository.SubreddiusRepository;
 import com.reddius.repository.UserRepository;
@@ -22,6 +23,7 @@ public class SubreddiusService {
 	
 	private final SubreddiusRepository subreddiusRepository;
 	private final UserRepository userRepository;
+	private final SubreddiusMapper subreddiusMapper;
 	
 	@Transactional
 	public SubreddiusDto saveReddius(SubreddiusDto subreddiusDto) {
@@ -40,17 +42,8 @@ public class SubreddiusService {
 	
 	@Transactional(readOnly = true)
 	public List<SubreddiusDto> getAll() {
-		    return subreddiusRepository.findAll().stream().map((Function<? super Subreddius, ? extends SubreddiusDto>) (subreddius) -> {
-			
-																return SubreddiusDto.builder()
-																		            .id(subreddius.getId())
-																		            .subreddiusName(subreddius.getName())
-																		            .description(subreddius.getDescription())
-																		            .numberOfPosts(subreddius.getPosts().size())
-																		            .userid(String.valueOf( subreddius.getUser().getId() ))
-																		            .build();	
-																
-															   }).collect(Collectors.toList());
+		    
+		    return subreddiusRepository.findAll().stream().map(subreddiusMapper::mapSubreddiusToDto).collect(Collectors.toList());
 	}
 
 }
