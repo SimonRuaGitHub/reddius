@@ -45,5 +45,10 @@ public class SubreddiusService {
 		    
 		    return subreddiusRepository.findAll().stream().map(subreddiusMapper::mapSubreddiusToDto).collect(Collectors.toList());
 	}
+	
+	@Transactional(readOnly = true)
+	public SubreddiusDto getSubreddiusById(Long id) {
+		   return subreddiusRepository.findById(id).map(subreddiusMapper::mapSubreddiusToDto).get();
+	}
 
 }
