@@ -2,10 +2,13 @@ package com.reddius.service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.reddius.dto.PostRequest;
+import com.reddius.dto.PostResponse;
+import com.reddius.mapper.PostMapper;
 import com.reddius.model.Post;
 import com.reddius.repository.PostRepository;
 import com.reddius.repository.SubreddiusRepository;
@@ -22,24 +25,17 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
 	private final SubreddiusRepository subreddiusRepository;
+	private final PostMapper postMapper;
 	
 	public void savePost(PostRequest postReq) {
-		   postRepository.save(mapDtoToPost(postReq));
-	}
-	
-	public Post mapDtoToPost(PostRequest postReq) {
-		   return Post.builder()
-				      .id(postReq.getPostId())
-				      .postName(postReq.getPostName())
-				      .url(postReq.getUrl())
-				      .description(postReq.getDescription())
-				      .createdDate(Instant.now() )
-				      .user( userRepository.findById(postReq.getUserid()).get() )
-				      .subreddius( subreddiusRepository.findById(postReq.getSubreddiusid()).get() )
-				      .build();
+		   postRepository.save(
+				                postMapper.mapPostRequestToPostEntity( postReq, 
+				                		                               subreddiusRepository.findById(postReq.getSubreddiusid()).get(), 
+				                		                               userRepository.findById(postReq.getUserid()).get() )
+				               );
 	}
 
-	public List<Post> getAllPosts(){
-		   return null;
+	public List<PostResponse> getAllPosts(){
+		   return postRepository.findAll().stream().map(postMapper::mapToDto).collect(Collectors.toList());
 	}
 }
