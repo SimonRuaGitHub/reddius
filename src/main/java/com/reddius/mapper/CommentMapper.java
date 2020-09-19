@@ -17,4 +17,8 @@ public interface CommentMapper {
     @Mapping(target="user", source="user")
     @Mapping(target="createdDate", expression="java(java.time.Instant.now())")
     Comment map(CommentDto commentDto, Post post, User user);
+    
+    @Mapping(target="postid", source="post.id")
+    @Mapping(target="userid", source="user.id")
+    CommentDto mapToDto(Comment comment);
 }
