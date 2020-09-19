@@ -9,12 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostRequest {
+public class PostRequest extends PostDto{
 	
-	private long postId;
-	private String postName;
-	private String url;
-	private String description;
     private long userid;
 	private long subreddiusid;
 }
