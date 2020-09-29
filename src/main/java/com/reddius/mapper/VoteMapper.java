@@ -11,7 +11,7 @@ import com.reddius.model.Vote;
 @Mapper(componentModel = "spring")
 public interface VoteMapper {
 
-    @Mapping(target="id", source="voteDto.id")
+    @Mapping(target="id", ignore = true)
     @Mapping(target="voteType", source="voteDto.voteType")
     @Mapping(target="post", source="post")
     @Mapping(target="user", source="user")

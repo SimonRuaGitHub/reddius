@@ -92,4 +92,13 @@ public class AuthService {
 		
 		return new AuthenticationResponse(token, loginReq.getUsername());
 	}
+	
+	public User getCurrentUser() {
+		   org.springframework.security.core.userdetails.User ppalUser = (org.springframework.security.core.userdetails.User)  SecurityContextHolder
+				   .getContext().getAuthentication().getPrincipal();
+		   
+		   return userRepository.findByUsername(ppalUser.getUsername())
+				                .orElseThrow( () -> new SpringReddiusException("User name not found - "+ ppalUser.getUsername()) );
+	}
+	
 }
