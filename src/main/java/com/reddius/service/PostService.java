@@ -36,7 +36,7 @@ public class PostService {
 		   postRepository.save(
 				                postMapper.mapPostRequestToPostEntity( postReq, 
 				                		                               subreddiusRepository.findById(postReq.getSubreddiusid()).get(), 
-				                		                               userRepository.findById(postReq.getUserid()).get() )
+				                		                               userRepository.findById(postReq.getUserid()).get())
 				               );
 	}
 

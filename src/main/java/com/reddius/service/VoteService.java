@@ -14,7 +14,6 @@ import com.reddius.model.User;
 import com.reddius.model.Vote;
 import com.reddius.model.VoteType;
 import com.reddius.repository.PostRepository;
-import com.reddius.repository.UserRepository;
 import com.reddius.repository.VoteRepository;
 
 import lombok.AllArgsConstructor;
@@ -34,7 +33,13 @@ public class VoteService {
 		    Post post = postRepository.findById( voteDto.getPostid() )
 		    		                  .orElseThrow(() -> new PostNotFoundException( String.valueOf( voteDto.getPostid() ) ));
 		    
-		    voteRepository.save( consolidateVoteToSave(post, authService.getCurrentUser(), voteDto) );
+		    Vote vote = consolidateVoteToSave(post, authService.getCurrentUser(), voteDto);
+		    
+		    voteRepository.save( vote );
+		    
+		    post.setVoteCount( voteRepository.findByPost(post).size() );
+		    
+		    postRepository.save(post);
 	}
 	
 	private Vote consolidateVoteToSave(Post post, User user, VoteDto voteDto) {
@@ -44,8 +49,7 @@ public class VoteService {
  	    if(voteByPostAndUser.isPresent()) {
  	    	
  	    	if( voteByPostAndUser.get().getVoteType().equals(voteDto.getVoteType()) )
- 	           throw new SpringReddiusException("You have already vote in same direction "+voteDto.getVoteType());
- 	    	
+ 	           throw new SpringReddiusException("You have already vote in same direction "+voteDto.getVoteType()); 	
  	    	else {
  	    		
  	    	     voteByPostAndUser.get().setVoteType(voteDto.getVoteType());
