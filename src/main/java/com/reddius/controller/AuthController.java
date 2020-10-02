@@ -1,5 +1,7 @@
 package com.reddius.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reddius.dto.AuthenticationResponse;
 import com.reddius.dto.LoginRequest;
+import com.reddius.dto.RefreshTokenRequest;
 import com.reddius.dto.RegisterRequest;
 import com.reddius.service.AuthService;
 
@@ -39,4 +42,19 @@ public class AuthController {
 	public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
 		return authService.login(loginRequest);
 	}
+	
+	@PostMapping("/refresh/token")
+    public ResponseEntity<AuthenticationResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+		
+    	   return new ResponseEntity<AuthenticationResponse>(authService.refreshToken(refreshTokenRequest), HttpStatus.CREATED);
+    }
+	
+	@PostMapping("/logout")
+	public ResponseEntity<String> deleteToken(@Valid @RequestBody String refreshToken){
+		   authService.deleteToken(refreshToken);
+		   return new ResponseEntity<String>("Refresh Token Deleted Successfully", HttpStatus.OK);
+	}
+	
+	
+	
 }

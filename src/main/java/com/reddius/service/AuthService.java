@@ -1,11 +1,13 @@
 package com.reddius.service;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.convert.ThreeTenBackPortConverters.ZoneIdToStringConverter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.reddius.dto.AuthenticationResponse;
 import com.reddius.dto.LoginRequest;
 import com.reddius.dto.RegisterRequest;
+import com.reddius.dto.RefreshTokenRequest;
 import com.reddius.exceptions.SpringReddiusException;
 import com.reddius.model.NotificationEmail;
 import com.reddius.model.User;
@@ -41,6 +44,8 @@ public class AuthService {
 	private final AuthenticationManager authManager;
 	
 	private final JwtProvider jwtProvider;
+	
+	private final RefreshTokenService refreshTokenService;
 	
 	@Transactional
 	public void signup(RegisterRequest regRequest) {
@@ -90,7 +95,29 @@ public class AuthService {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String token = jwtProvider.generateToken(authentication);
 		
-		return new AuthenticationResponse(token, loginReq.getUsername());
+		return AuthenticationResponse.builder()
+				                     .authenticationToken(token)
+				                     .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+				                     .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+				                     .username(loginReq.getUsername())
+				                     .build();
+	}
+	
+	public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+		
+		   refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+		   String newJwtToken = jwtProvider.generateTokenWithUsername(refreshTokenRequest.getUsername());
+		   
+		   return AuthenticationResponse.builder()
+						                .authenticationToken(newJwtToken)
+						                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+						                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+						                .username(refreshTokenRequest.getUsername())
+						                .build();
+	}
+	
+	public void deleteToken(String refreshToken) {
+		   refreshTokenService.deleteRefreshToken(refreshToken);
 	}
 	
 	public User getCurrentUser() {
