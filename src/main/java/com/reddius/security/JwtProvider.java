@@ -2,7 +2,6 @@ package com.reddius.security;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -11,8 +10,6 @@ import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 import javax.annotation.PostConstruct;
@@ -40,9 +37,9 @@ public class JwtProvider {
 		
 		return Jwts.builder()
 				   .setSubject(ppalFromUserSecurity.getUsername())
-				   .setIssuedAt(Date.from(Instant.now().atZone(ZoneId.systemDefault()).toInstant()))
+				   .setIssuedAt(Date.from(Instant.now()))
 				   .signWith(getPrivateKey())
-				   .setExpiration(Date.from(Instant.now().atZone(ZoneId.systemDefault()).toInstant().plusMillis(jwtExpirationInMillis)))
+				   .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
 				   .compact();
 	}
 	
@@ -50,9 +47,9 @@ public class JwtProvider {
 		
 		return Jwts.builder()
 				   .setSubject(username)
-				   .setIssuedAt(Date.from(Instant.now().atZone(ZoneId.systemDefault()).toInstant()))
+				   .setIssuedAt(Date.from(Instant.now()))
 				   .signWith(getPrivateKey())
-				   .setExpiration(Date.from(Instant.now().atZone(ZoneId.systemDefault()).toInstant().plusMillis(jwtExpirationInMillis)))
+				   .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
 				   .compact();
 	}
 	

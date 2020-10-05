@@ -94,7 +94,7 @@ public class AuthService {
 		Authentication authentication = authManager.authenticate( new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword()) );
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String token = jwtProvider.generateToken(authentication);
-		
+
 		return AuthenticationResponse.builder()
 				                     .authenticationToken(token)
 				                     .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
