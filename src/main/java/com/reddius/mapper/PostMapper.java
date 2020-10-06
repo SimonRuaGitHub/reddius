@@ -1,11 +1,18 @@
 package com.reddius.mapper;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.reddius.dto.PostRequest;
 import com.reddius.dto.PostResponse;
+import com.reddius.model.Comment;
 import com.reddius.model.Post;
 import com.reddius.model.Subreddius;
 import com.reddius.model.User;
@@ -40,7 +47,8 @@ public abstract class PostMapper {
 	public abstract PostResponse mapToDto(Post post);
 	
 	Integer countComments(Post post) {
-		    return commentRepository.findAllByPost(post).get().size();
+		    return commentRepository.findAllByPost(post)
+		    		                .orElse(Collections.emptyList()).size();
 	}
 	
 	Integer countVotes(Post post) {
