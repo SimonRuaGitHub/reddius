@@ -2,6 +2,7 @@ package com.reddius.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -30,7 +31,7 @@ public class SwaggerConfiguration {
 		    return new ApiInfoBuilder()
 		    	   .title("Reddius API")
 		    	   .version("1.0")
-		    	   .description("API for Reddius Application - A Reddit Clone")
+		    	   .description("API for Reddius Application - A Reddius Clone")
 		    	   .contact(new Contact("Simon Felipe Rua Vargas", "http://intelispark.com", "simon_reddius@email.com"))
 		    	   .license("Apache Licence Version 2.0")
 		    	   .build();

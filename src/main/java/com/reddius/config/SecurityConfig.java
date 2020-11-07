@@ -2,6 +2,7 @@ package com.reddius.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -33,9 +34,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Override
 	public void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf().disable() //as we are using stateless (REST) and Json Web Token this can be disabled
+		httpSecurity.cors().and()
+		            .csrf().disable() //as we are using stateless (REST) and Json Web Token can be disabled
 		            .authorizeRequests()
 		            .antMatchers("/api/auth/**","/dummy/**")
+		            .permitAll()
+		            .antMatchers(HttpMethod.GET, "/api/subreddius")
 		            .permitAll()
 		            .antMatchers("/v2/api-docs",
 		            		     "/configuration/ui",
