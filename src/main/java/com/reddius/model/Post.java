@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.type.ForeignKeyDirection;
 import org.springframework.lang.Nullable;
 
@@ -45,6 +46,7 @@ public class Post {
 	
 	@Nullable
 	@Lob
+	@Type(type = "org.hibernate.type.TextType")
 	private String description;
 	
 	@Column(name="vote_count")
