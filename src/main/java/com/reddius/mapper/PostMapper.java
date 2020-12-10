@@ -40,6 +40,7 @@ public abstract class PostMapper {
 	@Mapping(target="postId", source="id")
 	@Mapping(target="userName", source="user.username")
 	@Mapping(target="subreddiusName", source="subreddius.name")
+	@Mapping(target="userId", source="user.id")
 	@Mapping(target="description", source="description")
 	@Mapping(target="voteCount", expression="java(countVotes(post))")
 	@Mapping(target="commentCount", expression ="java(countComments(post))")

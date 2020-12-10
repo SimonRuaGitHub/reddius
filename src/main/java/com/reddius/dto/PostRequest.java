@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostRequest extends PostDto{
 	
-    private long userid;
 	private long subreddiusid;
 }
