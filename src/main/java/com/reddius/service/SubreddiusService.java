@@ -36,7 +36,7 @@ public class SubreddiusService {
 		return Subreddius.builder()
 					     .name(subreddiusReq.getSubreddiusName())
 					     .description(subreddiusReq.getDescription())
-					     .user( userRepository.findById(Long.parseLong(subreddiusReq.getUserid())).get() )
+					     .user( userRepository.findByUsername(subreddiusReq.getUsername()).get() )
 					     .build();        
 	}
 	

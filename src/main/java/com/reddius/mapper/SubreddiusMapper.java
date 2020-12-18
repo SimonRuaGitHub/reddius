@@ -17,6 +17,7 @@ public interface SubreddiusMapper {
 	@Mapping(target = "numberOfPosts", expression="java(qtyPosts(subreddius.getPosts()))")
 	@Mapping(target = "subreddiusName", source="name")
 	@Mapping(target="userid", expression="java(getUserId(subreddius.getUser()))")
+	@Mapping(target="username",expression="java(subreddius.getUser().getUsername())")
 	SubreddiusDto mapSubreddiusToDto(Subreddius subreddius);
 	
 	default Integer qtyPosts(List<Post> posts){
