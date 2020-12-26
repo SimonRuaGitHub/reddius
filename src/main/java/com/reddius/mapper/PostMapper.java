@@ -30,7 +30,7 @@ public abstract class PostMapper {
 	@Autowired
 	private CommentRepository commentRepository;
 
-	@Mapping(target="id", source="postRequest.postId")
+	@Mapping(target="id", ignore = true)
 	@Mapping(target="user", source="user")
 	@Mapping(target="subreddius", source="subreddius")
 	@Mapping(target="description", source="postRequest.description")

@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import org.springframework.data.convert.ThreeTenBackPortConverters.ZoneIdToStringConverter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.authentication.UserServiceBeanDefinitionParser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -100,6 +101,7 @@ public class AuthService {
 				                     .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
 				                     .refreshToken(refreshTokenService.generateRefreshToken().getToken())
 				                     .username(loginReq.getUsername())
+				                     .userid(searchUserId(loginReq.getUsername()))
 				                     .build();
 	}
 	
@@ -113,6 +115,7 @@ public class AuthService {
 						                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
 						                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
 						                .username(refreshTokenRequest.getUsername())
+						                .userid(searchUserId(refreshTokenRequest.getUsername()))
 						                .build();
 	}
 	
@@ -128,4 +131,9 @@ public class AuthService {
 				                .orElseThrow( () -> new SpringReddiusException("User name not found - "+ ppalUser.getUsername()) );
 	}
 	
+	private long searchUserId(String username) {
+		    return userRepository.findByUsername(username)
+		    		             .orElseThrow( () -> new SpringReddiusException("User name not found - "+ username) )
+		    		             .getId();
+	}	    		             
 }
