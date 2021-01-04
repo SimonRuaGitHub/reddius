@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reddius.dto.CommentDto;
+import com.reddius.dto.CommentRequest;
+import com.reddius.dto.CommentResponse;
 import com.reddius.exceptions.PostNotFoundException;
 import com.reddius.exceptions.SpringReddiusException;
 import com.reddius.mapper.CommentMapper;
@@ -28,39 +30,39 @@ public class CommentService {
     private final CommentMapper commentMapper;
    
     @Transactional
-    public void saveComment(CommentDto commentDto) {
+    public void saveComment(CommentRequest commentReq) {
     	
     	commentRepository.save(
-    			                commentMapper.map(commentDto,
-    			                		          postRepository.findById( commentDto.getPostid() ).get(), 
-    			                		          userRepository.findById( commentDto.getUserid() ).get())
+    			                commentMapper.map(commentReq,
+    			                		          postRepository.findById( commentReq.getPostid() ).get(), 
+    			                		          userRepository.findById( commentReq.getUserid() ).get())
     			               );
     	
     }
 
     @Transactional(readOnly = true)
-	public List<CommentDto> findCommentsByPost(long postid) {
+	public List<CommentResponse> findCommentsByPost(long postid) {
 		
 		   Post post = postRepository.findById(postid).orElseThrow(() -> new PostNotFoundException(postid));
 		   
-		   List<CommentDto> commentsDto = commentRepository.findAllByPost(post)
-								                           .orElseThrow(() -> new SpringReddiusException("the post oesn't have any comments "+postid))
+		   List<CommentResponse> comments = commentRepository.findAllByPost(post)
+								                           .orElseThrow(() -> new SpringReddiusException("the post doesn't have any comments "+postid))
 								                           .stream()
-								                           .map(commentMapper::mapToDto)
+								                           .map(commentMapper::mapToResponse)
 								                           .collect(Collectors.toList());
 				                            
-	       return commentsDto;
+	       return comments;
 	}
 
     @Transactional(readOnly = true)
-	public List<CommentDto> findCommentsByUserName(String username) {
+	public List<CommentResponse> findCommentsByUserName(String username) {
 		
 		   User user = userRepository.findByUsername(username).orElseThrow(() -> new SpringReddiusException("User not found using username: "+username));
 		   
 		   return commentRepository.findAllCommentsByUser(user)
 		                           .orElseThrow(() -> new SpringReddiusException("the user doesn't have any comments "+username))
 		                           .stream()
-		                           .map(commentMapper::mapToDto)
+		                           .map(commentMapper::mapToResponse)
 		                           .collect(Collectors.toList());
 	}
 }

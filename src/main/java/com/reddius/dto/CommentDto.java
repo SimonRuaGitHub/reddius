@@ -8,16 +8,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-public class CommentDto {
+public abstract class CommentDto {
+	
+	protected String text;
 
-	private Long id;
+	protected long postid;
 	
-	private String text;
-	
-	private Instant createdDate;
-
-	private long postid;
-	
-	private long userid;
+	protected long userid;
 }

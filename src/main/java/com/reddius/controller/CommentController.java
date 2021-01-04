@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reddius.dto.CommentDto;
+import com.reddius.dto.CommentRequest;
+import com.reddius.dto.CommentResponse;
 import com.reddius.service.CommentService;
 
 import lombok.AllArgsConstructor;
@@ -24,19 +26,19 @@ public class CommentController {
 	private final CommentService commentService;
 	
 	@PostMapping
-	public ResponseEntity createComment(@RequestBody CommentDto commDto) {
-		   commentService.saveComment(commDto);
+	public ResponseEntity createComment(@RequestBody CommentRequest commReq) {
+		   commentService.saveComment(commReq);
 		   return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 	
 	@GetMapping("by-postId/{postId}")
-	public ResponseEntity<List<CommentDto>> getCommentsByPost(@PathVariable(name = "postId") long postid) {
+	public ResponseEntity<List<CommentResponse>> getCommentsByPost(@PathVariable(name = "postId") long postid) {
 		   return ResponseEntity.status(HttpStatus.OK)
 				                .body( commentService.findCommentsByPost(postid) );
 	}
 	
 	@GetMapping("by-user/{username}")
-	public ResponseEntity<List<CommentDto>> getCommentsByUserName(@PathVariable String username){
+	public ResponseEntity<List<CommentResponse>> getCommentsByUserName(@PathVariable String username){
 		   return ResponseEntity.status(HttpStatus.OK)
 				                .body( commentService.findCommentsByUserName(username) );
 	}
