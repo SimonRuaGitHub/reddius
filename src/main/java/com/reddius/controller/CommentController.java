@@ -19,7 +19,7 @@ import com.reddius.service.CommentService;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/api/comments/")
+@RequestMapping("/api/comments")
 @AllArgsConstructor
 public class CommentController {
 
@@ -31,13 +31,13 @@ public class CommentController {
 		   return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 	
-	@GetMapping("by-postId/{postId}")
+	@GetMapping("/by-postId/{postId}")
 	public ResponseEntity<List<CommentResponse>> getCommentsByPost(@PathVariable(name = "postId") long postid) {
 		   return ResponseEntity.status(HttpStatus.OK)
 				                .body( commentService.findCommentsByPost(postid) );
 	}
 	
-	@GetMapping("by-user/{username}")
+	@GetMapping("/by-user/{username}")
 	public ResponseEntity<List<CommentResponse>> getCommentsByUserName(@PathVariable String username){
 		   return ResponseEntity.status(HttpStatus.OK)
 				                .body( commentService.findCommentsByUserName(username) );

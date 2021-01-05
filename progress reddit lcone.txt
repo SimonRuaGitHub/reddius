@@ -1,1 +1,2 @@
-min 24:40 - freecodebootcamp reddit clone
+suspected cross origin error caused from Token interceptor, is showing up selector = 0.
+which means that error is caused from client UI.
