@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
@@ -12,12 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.reddius.dto.PostRequest;
 import com.reddius.dto.PostResponse;
+import com.reddius.exceptions.VoteNotFoundException;
 import com.reddius.model.Comment;
 import com.reddius.model.Post;
 import com.reddius.model.Subreddius;
 import com.reddius.model.User;
+import com.reddius.model.Vote;
+import com.reddius.model.VoteType;
 import com.reddius.repository.CommentRepository;
 import com.reddius.repository.VoteRepository;
+import com.reddius.service.AuthService;
 import com.github.marlonlom.utilities.timeago.TimeAgo;
 
 
@@ -29,6 +34,9 @@ public abstract class PostMapper {
 	
 	@Autowired
 	private CommentRepository commentRepository;
+	
+	@Autowired
+	private AuthService authService;
 
 	@Mapping(target="id", ignore = true)
 	@Mapping(target="user", source="user")
@@ -45,6 +53,7 @@ public abstract class PostMapper {
 	@Mapping(target="voteCount", expression="java(countVotes(post))")
 	@Mapping(target="commentCount", expression ="java(countComments(post))")
 	@Mapping(target="duration",  expression = "java(getRelativeTimeAgo(post))")
+	@Mapping(target="voteTypeOfUser", expression = "java(getUserVoteOnPost(post))" )
 	public abstract PostResponse mapToDto(Post post);
 	
 	Integer countComments(Post post) {
@@ -58,6 +67,20 @@ public abstract class PostMapper {
 	
 	String getRelativeTimeAgo(Post post) {
 		    return TimeAgo.using(post.getCreatedDate().toEpochMilli());
+	}
+	
+	VoteType getUserVoteOnPost(Post post) {
+		
+		    VoteType voteType = null;
+		    
+		    if(authService.isLoggedIn()) {
+		       User user = authService.getCurrentUser();
+		       
+		       Optional<Vote> voteOpt = voteRepository.findByPostAndUser(post, user);
+		       voteType = voteOpt.isPresent() ? voteOpt.get().getVoteType() : null;	    		   
+		    }
+		    
+		    return voteType;
 	}
 	
 }

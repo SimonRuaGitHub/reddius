@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 
 import org.springframework.data.convert.ThreeTenBackPortConverters.ZoneIdToStringConverter;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.authentication.UserServiceBeanDefinitionParser;
@@ -135,5 +136,12 @@ public class AuthService {
 		    return userRepository.findByUsername(username)
 		    		             .orElseThrow( () -> new SpringReddiusException("User name not found - "+ username) )
 		    		             .getId();
-	}	    		             
+	}	    		
+	
+	public boolean isLoggedIn() {
+		
+		   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		   	   
+		   return !(authentication instanceof AnonymousAuthenticationToken) && authentication.isAuthenticated();
+	}
 }
