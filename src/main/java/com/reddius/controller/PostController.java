@@ -2,6 +2,11 @@ package com.reddius.controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +24,17 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/posts")
-@AllArgsConstructor
 public class PostController {
-	
-	private final PostService postService;
+
+	private PostService postService;
+
+	@Value("${pages.max.size}")
+	private Long maxSizePage;
+
+	@Autowired
+	public PostController(final PostService postService){
+		   this.postService = postService;
+	}
 
 	@PostMapping
 	public ResponseEntity createPost(@RequestBody PostRequest postRequest) {
@@ -55,4 +67,9 @@ public class PostController {
 				                .body( postService.getPostsByUserName(username) );
 	}
 
+	@GetMapping("/page/{page}")
+	public ResponseEntity<Page<PostResponse>> getPostsByPage(@PathVariable Integer page){
+		   return ResponseEntity.status(HttpStatus.OK)
+				                .body( postService.getAllPostByPage(PageRequest.of(page, maxSizePage.intValue())) );
+	}
 }

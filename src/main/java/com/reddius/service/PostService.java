@@ -4,6 +4,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.reddius.dto.PostRequest;
@@ -64,5 +67,11 @@ public class PostService {
 		   
 		   return postRepository.findAllByUser(user).stream().map(postMapper::mapToDto).collect(Collectors.toList());
 	}
-	
+
+	public Page<PostResponse> getAllPostByPage(Pageable pageable){
+
+		   List<PostResponse> listPosts = postRepository.findAll(pageable).stream().map(postMapper::mapToDto).collect(Collectors.toList());
+
+		   return new PageImpl<PostResponse>(listPosts, pageable, listPosts.size());
+	}
 }

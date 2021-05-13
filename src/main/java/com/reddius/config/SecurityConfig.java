@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		            .authorizeRequests()
 		            .antMatchers("/api/auth/**","/dummy/**")
 		            .permitAll()
-		            .antMatchers(HttpMethod.GET, "/api/subreddius","/api/posts/all","/api/posts/{id}","/api/comments/by-postId/{id}")
+		            .antMatchers(HttpMethod.GET, "/api/subreddius","/api/posts/all","/api/posts/{id}","/api/comments/by-postId/{id}","/api/posts/page/{page}")
 		            .permitAll()
 		            .antMatchers("/v2/api-docs",
 		            		     "/configuration/ui",
