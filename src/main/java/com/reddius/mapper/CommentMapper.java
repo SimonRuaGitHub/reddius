@@ -2,11 +2,11 @@ package com.reddius.mapper;
 
 import java.time.Instant;
 
+import com.github.marlonlom.utilities.timeago.TimeAgo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.github.marlonlom.utilities.timeago.TimeAgo;
-import com.reddius.dto.CommentDto;
+
 import com.reddius.dto.CommentRequest;
 import com.reddius.dto.CommentResponse;
 import com.reddius.model.Comment;

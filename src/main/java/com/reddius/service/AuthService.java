@@ -41,16 +41,17 @@ public class AuthService {
 	
 	private final VerificationTokenRepository verTokenRepository;
 	
-	private final MailService mailService;
-	
 	private final AuthenticationManager authManager;
 	
 	private final JwtProvider jwtProvider;
 	
 	private final RefreshTokenService refreshTokenService;
+
+	private final MQSenderService mqSenderService;
 	
 	@Transactional
 	public void signup(RegisterRequest regRequest) {
+
 		   User user = new User();
 		   user.setUsername(regRequest.getUsername());
 		   user.setEmail(regRequest.getEmail());
@@ -61,8 +62,9 @@ public class AuthService {
 		   userRepository.save(user);
 		   
 		   String token = generateVerificationtToken(user);
-		   mailService.sendMail(new NotificationEmail("Welcome from Reddius", user.getEmail(), "Thank you for Signup to Reddius please click on"
-		   		+ " url to activate your account: http://localhost:8080/api/auth/accountVerification/" + token));
+
+		   mqSenderService.send(new NotificationEmail("Welcome from Reddius", user.getEmail(), "Thank you for Signup to Reddius please click on"
+				   + " url to activate your account: http://localhost:8080/api/auth/accountVerification/" + token));
 	}
 	
 	private String generateVerificationtToken(User user) {
